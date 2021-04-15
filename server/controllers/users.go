@@ -27,7 +27,7 @@ func (u *UsersTable) CreateUser(user *models.User, db *gorm.DB) (*models.User, *
 		return nil, utils.InvalidInput("username", "username already in use")
 	}
 
-	emailTaken := u.getUserByEmail(user.Email, db)
+	emailTaken := u.GetUserByEmail(user.Email, db)
 	if emailTaken != nil {
 		return nil, utils.InvalidInput("email", "email already in use")
 	}
@@ -46,7 +46,7 @@ func (u *UsersTable) CreateUser(user *models.User, db *gorm.DB) (*models.User, *
 }
 
 func (u *UsersTable) LoginByEmail(input *models.UserInput, db *gorm.DB) (*models.User, *echo.HTTPError) {
-	user := u.getUserByEmail(input.UsernameOrEmail, db)
+	user := u.GetUserByEmail(input.UsernameOrEmail, db)
 	if user == nil {
 		return nil, utils.InvalidInput("email", "email does not exist")
 	}
@@ -74,6 +74,18 @@ func (u *UsersTable) LoginByUsername(input *models.UserInput, db *gorm.DB) (*mod
 	return user, nil
 }
 
+func (u *UsersTable) ChangePassword(id, newPassword string, db *gorm.DB) (*models.User, *echo.HTTPError) {
+	user := u.GetUserByid(id, db)
+	if user == nil {
+		return nil, utils.InvalidInput("token", "invalid token")
+	}
+
+	hashPwd, _ := utils.GeneratePassword(passwordCfg, newPassword)
+	db.Model(&user).Update("password", hashPwd)
+
+	return user, nil
+}
+
 func (u *UsersTable) getUserByUsername(username string, db *gorm.DB) *models.User {
 	var user models.User
 
@@ -86,12 +98,23 @@ func (u *UsersTable) getUserByUsername(username string, db *gorm.DB) *models.Use
 	return &user
 }
 
-func (u *UsersTable) getUserByEmail(email string, db *gorm.DB) *models.User {
+func (u *UsersTable) GetUserByEmail(email string, db *gorm.DB) *models.User {
 	var user models.User
 
 	db.Find(&user).Where("email = ?", email)
 
 	if user.ID != 0 {
+		return nil
+	}
+
+	return &user
+}
+
+func (u *UsersTable) GetUserByid(id interface{}, db *gorm.DB) *models.User {
+	var user models.User
+
+	db.First(&user, id)
+	if user.ID == 0 {
 		return nil
 	}
 
