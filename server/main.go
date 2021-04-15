@@ -1,13 +1,22 @@
 package main
 
-import "github.com/labstack/echo/v4"
+import (
+	"CodePonder/cache"
+	"CodePonder/routes"
+
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+)
 
 func main() {
+	//instance echo instance and dbs
 	e := echo.New()
+	store := cache.SessionsClient()
 
-	e.GET("/", func(c echo.Context) error {
-		return c.String(200, "hello world")
-	})
+	// middlewares
+	e.Use(cache.Sessions("qid", *store))
+	e.Use(middleware.RemoveTrailingSlash())
 
+	routes.Router(e)
 	e.Logger.Fatal(e.Start(":1323"))
 }
