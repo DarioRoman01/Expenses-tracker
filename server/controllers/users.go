@@ -10,7 +10,9 @@ import (
 
 var passwordCfg *utils.PasswordConfig
 
-type UsersTable struct{}
+type UsersHandler struct {
+	DB *gorm.DB
+}
 
 func init() {
 	passwordCfg = &utils.PasswordConfig{
@@ -21,16 +23,21 @@ func init() {
 	}
 }
 
-// validate that username and email are not taken and hashpassword
-func (u *UsersTable) CreateUser(user *models.User, db *gorm.DB) (*models.User, *echo.HTTPError) {
-	usernameTaken := u.getUserByUsername(user.Username, db)
+func (u *UsersHandler) CreateUser(user models.User) (*models.User, *echo.HTTPError) {
+	usernameTaken := u.getUserByUsername(user.Username)
 	if usernameTaken != nil {
-		return nil, utils.InvalidInput("username", "username already taken")
+		return nil, echo.NewHTTPError(400, models.ErrorMessage{
+			Field:   "username",
+			Message: "username already taken",
+		})
 	}
 
-	emailTaken := u.getUserByEmail(user.Email, db)
+	emailTaken := u.getUserByEmail(user.Email)
 	if emailTaken != nil {
-		return nil, utils.InvalidInput("username", "username already in use")
+		return nil, echo.NewHTTPError(400, models.ErrorMessage{
+			Field:   "email",
+			Message: "email already in use",
+		})
 	}
 
 	hashPassword, err := utils.GeneratePassword(passwordCfg, user.Password)
@@ -39,47 +46,17 @@ func (u *UsersTable) CreateUser(user *models.User, db *gorm.DB) (*models.User, *
 	}
 
 	user.Password = hashPassword
-	if err := db.Create(&user).Error; err != nil {
+	if err := u.DB.Create(&user).Error; err != nil {
 		return nil, echo.NewHTTPError(500, "unable to create user")
 	}
 
-	return user, nil
+	return &user, nil
 }
 
-func (u *UsersTable) LoginByUsername(input *models.UserInput, DB *gorm.DB) (*models.User, *echo.HTTPError) {
-	user := u.getUserByUsername(input.UsernameOrEmail, DB)
-	if user == nil {
-		return nil, utils.InvalidInput("usernameOrEmail", "username does not exist")
-	}
-
-	ok, _ := utils.ComparePasswords(input.Password, user.Password)
-	if !ok {
-		return nil, utils.InvalidInput("password", "invalid credentials")
-	}
-
-	return user, nil
-}
-
-func (u *UsersTable) LoginByEmail(input *models.UserInput, DB *gorm.DB) (*models.User, *echo.HTTPError) {
-	user := u.getUserByEmail(input.UsernameOrEmail, DB)
-
-	if user == nil {
-		return nil, utils.InvalidInput("usernameOrEmail", "email does not exist")
-	}
-
-	ok, _ := utils.ComparePasswords(input.Password, user.Password)
-
-	if !ok {
-		return nil, utils.InvalidInput("password", "invalid crendentials")
-	}
-
-	return user, nil
-}
-
-func (u *UsersTable) getUserByUsername(username string, DB *gorm.DB) *models.User {
+func (u *UsersHandler) getUserByUsername(username string) *models.User {
 	var user models.User
 
-	DB.Find(&user).Where("username = ?", username)
+	u.DB.Find(&user).Where("username = ?", username)
 
 	if user.ID != 0 {
 		return nil
@@ -88,10 +65,10 @@ func (u *UsersTable) getUserByUsername(username string, DB *gorm.DB) *models.Use
 	return &user
 }
 
-func (u *UsersTable) getUserByEmail(email string, DB *gorm.DB) *models.User {
+func (u *UsersHandler) getUserByEmail(email string) *models.User {
 	var user models.User
 
-	DB.Find(&user).Where("email = ?", email)
+	u.DB.Find(&user).Where("email = ?", email)
 
 	if user.ID != 0 {
 		return nil
