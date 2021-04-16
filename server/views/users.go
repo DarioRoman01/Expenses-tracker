@@ -13,13 +13,13 @@ import (
 	"gorm.io/gorm"
 )
 
-type UsersHandler struct {
+type UsersViews struct {
 	DB *gorm.DB
 }
 
 var usersTable *controllers.UsersTable
 
-func (u *UsersHandler) SignupView(c echo.Context) error {
+func (u *UsersViews) SignupView(c echo.Context) error {
 	var userInput models.UserRegisterInput
 
 	if err := c.Bind(&userInput); err != nil {
@@ -48,7 +48,7 @@ func (u *UsersHandler) SignupView(c echo.Context) error {
 	return c.JSON(201, usersCreated)
 }
 
-func (u *UsersHandler) LoginView(c echo.Context) error {
+func (u *UsersViews) LoginView(c echo.Context) error {
 	var userInput models.UserInput
 
 	if err := c.Bind(&userInput); err != nil {
@@ -77,7 +77,7 @@ func (u *UsersHandler) LoginView(c echo.Context) error {
 	}
 }
 
-func (u *UsersHandler) ForgotPasswordView(c echo.Context) error {
+func (u *UsersViews) ForgotPasswordView(c echo.Context) error {
 	email := c.FormValue("email")
 	user := usersTable.GetUserByEmail(email, u.DB)
 	if user == nil {
@@ -93,7 +93,7 @@ func (u *UsersHandler) ForgotPasswordView(c echo.Context) error {
 	return c.JSON(200, "we send you and email please check your email")
 }
 
-func (u *UsersHandler) ChangePasswordView(c echo.Context) error {
+func (u *UsersViews) ChangePasswordView(c echo.Context) error {
 	newPassword := c.FormValue("newPassword")
 	if len(newPassword) < 4 {
 		return utils.InvalidInput("newPassword", "password must be at least 4 characters")
@@ -118,4 +118,15 @@ func (u *UsersHandler) ChangePasswordView(c echo.Context) error {
 	session.Save()
 
 	return c.JSON(200, "password changed succesfully")
+}
+
+func (u *UsersViews) MeView(c echo.Context) error {
+	session := cache.Default(c)
+	val := session.Get("userId")
+	if val == nil {
+		return echo.NewHTTPError(401, "not authenticated")
+	}
+
+	user := usersTable.GetUserByid(val, u.DB)
+	return c.JSON(200, user)
 }

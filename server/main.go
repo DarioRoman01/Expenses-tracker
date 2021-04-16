@@ -19,7 +19,7 @@ func main() {
 		AllowOrigins:     []string{os.Getenv("CORS_ORIGIN")},
 		AllowCredentials: true,
 	}))
-	e.Use(cache.Sessions("qid", *store))
+	e.Pre(cache.Sessions("qid", *store))
 	e.Use(middleware.RemoveTrailingSlash())
 
 	routes.Router(e)
