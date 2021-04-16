@@ -5,7 +5,14 @@ import (
 	"os"
 
 	"github.com/go-redis/redis/v8"
+	"github.com/joho/godotenv"
 )
+
+func init() {
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("unable to read env")
+	}
+}
 
 // redis client for sessions
 func SessionsClient() *RedisStore {

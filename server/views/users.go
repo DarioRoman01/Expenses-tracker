@@ -20,25 +20,30 @@ type UsersHandler struct {
 var usersTable *controllers.UsersTable
 
 func (u *UsersHandler) SignupView(c echo.Context) error {
-	var user models.User
+	var userInput models.UserRegisterInput
 
-	if err := c.Bind(&user); err != nil {
+	if err := c.Bind(&userInput); err != nil {
 		return echo.NewHTTPError(423, "unable to parse request body")
 	}
 
-	isInvalid := utils.ValidateRegister(user)
+	isInvalid := utils.ValidateRegister(userInput)
 
 	if isInvalid != nil {
 		return c.JSON(isInvalid.Code, isInvalid.Message)
 	}
 
-	usersCreated, err := usersTable.CreateUser(&user, u.DB)
+	usersCreated, err := usersTable.CreateUser(&models.User{
+		Username: userInput.Username,
+		Email:    userInput.Email,
+		Password: userInput.Password,
+	}, u.DB)
+
 	if err != nil {
 		return c.JSON(err.Code, err.Message)
 	}
 
 	session := cache.Default(c)
-	session.Set("userId", user.ID)
+	session.Set("userId", usersCreated.ID)
 	session.Save()
 	return c.JSON(201, usersCreated)
 }

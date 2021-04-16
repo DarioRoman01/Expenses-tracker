@@ -7,20 +7,20 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func ValidateRegister(user models.User) *echo.HTTPError {
-	if len(user.Username) < 3 {
+func ValidateRegister(input models.UserRegisterInput) *echo.HTTPError {
+	if len(input.Username) < 3 {
 		return InvalidInput("username", "username must be at least 3 characters")
 	}
 
-	if strings.Contains(user.Username, "@") {
+	if strings.Contains(input.Username, "@") {
 		return InvalidInput("username", "username connot contain @")
 	}
 
-	if !strings.Contains(user.Email, "@") || !strings.Contains(user.Email, ".") {
+	if !strings.Contains(input.Email, "@") || !strings.Contains(input.Email, ".") {
 		return InvalidInput("email", "invalid email")
 	}
 
-	if len(user.Password) < 4 {
+	if len(input.Password) < 4 {
 		return InvalidInput("password", "password must be at least 4 characts")
 	}
 
