@@ -14,8 +14,6 @@
     <button class="navbar-register" on:click={$goto("./Register")}>
       Register
     </button>
-    <!-- <a class="login-link" href={$url("./Login")}>Login</a>
-    <a class="register-link" href={$url("./Register")}>Register</a> -->
   </div>
 </nav>
 
@@ -44,8 +42,10 @@
     border-radius: 10px;
     color: #ffffff;
     margin-right: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
   }
-
+  
   .navbar-register {
     background-color: #003049;
     border: #ffffff 1px solid;
@@ -53,8 +53,12 @@
     color: #ffffff;
     margin-right: 10px;
   }
-
+  
   .navbar-title {
     padding-left: 10px;
+  }
+
+  .navbar-login:hover, .navbar-register:hover {
+    background-color: #003b5a;
   }
 </style>

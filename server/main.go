@@ -3,13 +3,19 @@ package main
 import (
 	"CodePonder/cache"
 	"CodePonder/routes"
+	"log"
 	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("unable to read env")
+	}
+
 	//instance echo instance and dbs
 	e := echo.New()
 	store := cache.SessionsClient()
