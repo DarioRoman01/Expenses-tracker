@@ -3,7 +3,6 @@ package views
 import (
 	"CodePonder/controllers"
 	"CodePonder/models"
-	"CodePonder/utils"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
@@ -17,10 +16,8 @@ type ExpensesViews struct {
 var expensesTable *controllers.ExpensesTable
 
 func (e *ExpensesViews) AddExpenseView(c echo.Context) error {
-	userId, err := utils.IsLoggedIn(c)
-	if err != nil {
-		return c.JSON(err.Code, err.Message)
-	}
+	id := c.Request().Context().Value("user")
+	userId := id.(int)
 
 	var expense models.Expenses
 	if err := c.Bind(&expense); err != nil {
@@ -37,10 +34,8 @@ func (e *ExpensesViews) AddExpenseView(c echo.Context) error {
 }
 
 func (e *ExpensesViews) ExpensesView(c echo.Context) error {
-	userId, httpErr := utils.IsLoggedIn(c)
-	if httpErr != nil {
-		return c.JSON(httpErr.Code, httpErr.Message)
-	}
+	id := c.Request().Context().Value("user")
+	userId := id.(int)
 
 	limit := c.QueryParam("limit")
 	intLimit, err := strconv.Atoi(limit)
@@ -61,10 +56,8 @@ func (e *ExpensesViews) ExpensesView(c echo.Context) error {
 }
 
 func (e *ExpensesViews) ExpensesByCategoryView(c echo.Context) error {
-	userId, err := utils.IsLoggedIn(c)
-	if err != nil {
-		return c.JSON(err.Code, err.Message)
-	}
+	id := c.Request().Context().Value("user")
+	userId := id.(int)
 
 	category := c.QueryParam("category")
 	expenses, err := expensesTable.GetExpenseByCategory(userId, category, e.DB)
@@ -73,4 +66,36 @@ func (e *ExpensesViews) ExpensesByCategoryView(c echo.Context) error {
 	}
 
 	return c.JSON(200, expenses)
+}
+
+func (e *ExpensesViews) DeleteExpenseView(c echo.Context) error {
+	id := c.Request().Context().Value("user")
+	userId := id.(int)
+	err := expensesTable.DeleteExpense(c.Param("id"), userId, e.DB)
+	if err != nil {
+		return c.JSON(err.Code, err.Message)
+	}
+
+	return c.JSON(200, "succesfully deleted")
+}
+
+func (e *ExpensesViews) GetCategorysView(c echo.Context) error {
+	categorys, err := expensesTable.GetCategorys(e.DB)
+	if err != nil {
+		return c.JSON(err.Code, err.Message)
+	}
+
+	return c.JSON(200, categorys)
+}
+
+func (e *ExpensesViews) AvarageAmountView(c echo.Context) error {
+	id := c.Request().Context().Value("user")
+	userId := id.(int)
+
+	avarage, err := expensesTable.GetAvarageAmount(userId, e.DB)
+	if err != nil {
+		return c.JSON(err.Code, err.Message)
+	}
+
+	return c.JSON(200, avarage)
 }
