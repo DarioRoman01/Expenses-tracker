@@ -19,6 +19,8 @@ type UsersViews struct {
 
 var usersTable *controllers.UsersTable
 
+//Users singup view. Validates users input
+//and create a session when the account is created
 func (u *UsersViews) SignupView(c echo.Context) error {
 	var userInput models.UserRegisterInput
 
@@ -48,6 +50,8 @@ func (u *UsersViews) SignupView(c echo.Context) error {
 	return c.JSON(201, usersCreated)
 }
 
+//Users Login view. check is user in is loggin with
+//email or username and generate cookie session
 func (u *UsersViews) LoginView(c echo.Context) error {
 	var userInput models.UserInput
 
@@ -77,6 +81,8 @@ func (u *UsersViews) LoginView(c echo.Context) error {
 	}
 }
 
+// Forgot Password View check if the email is in use and
+// send an email to users email
 func (u *UsersViews) ForgotPasswordView(c echo.Context) error {
 	email := c.FormValue("email")
 	user := usersTable.GetUserByEmail(email, u.DB)
@@ -93,6 +99,8 @@ func (u *UsersViews) ForgotPasswordView(c echo.Context) error {
 	return c.JSON(200, "we send you and email please check your email")
 }
 
+// Change password view validate if given token is store in redis
+// and validate that the token is valid and the new password
 func (u *UsersViews) ChangePasswordView(c echo.Context) error {
 	newPassword := c.FormValue("newPassword")
 	if len(newPassword) < 4 {
@@ -120,6 +128,7 @@ func (u *UsersViews) ChangePasswordView(c echo.Context) error {
 	return c.JSON(200, "password changed succesfully")
 }
 
+// me view return users info when is logged in
 func (u *UsersViews) MeView(c echo.Context) error {
 	session := cache.Default(c)
 	val := session.Get("userId")
@@ -129,4 +138,12 @@ func (u *UsersViews) MeView(c echo.Context) error {
 
 	user := usersTable.GetUserByid(val, u.DB)
 	return c.JSON(200, user)
+}
+
+// Logout view handles users logout destroing sessions
+func (u *UsersViews) LogoutView(c echo.Context) error {
+	session := cache.Default(c)
+	session.Clear()
+	session.Save()
+	return c.JSON(200, true)
 }

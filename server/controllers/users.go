@@ -21,6 +21,7 @@ func init() {
 	}
 }
 
+// Create user validates that the username  or email is already in use and hash users password
 func (u *UsersTable) CreateUser(user *models.User, db *gorm.DB) (*models.User, *echo.HTTPError) {
 	usernameTaken := u.getUserByUsername(user.Username, db)
 	if usernameTaken != nil {
@@ -45,6 +46,7 @@ func (u *UsersTable) CreateUser(user *models.User, db *gorm.DB) (*models.User, *
 	return user, nil
 }
 
+// Login by email handles users login with email and validate that given email exist
 func (u *UsersTable) LoginByEmail(input *models.UserInput, db *gorm.DB) (*models.User, *echo.HTTPError) {
 	user := u.GetUserByEmail(input.UsernameOrEmail, db)
 	if user == nil {
@@ -59,6 +61,7 @@ func (u *UsersTable) LoginByEmail(input *models.UserInput, db *gorm.DB) (*models
 	return user, nil
 }
 
+// Login by username handles users login with username and validate that given username exist
 func (u *UsersTable) LoginByUsername(input *models.UserInput, db *gorm.DB) (*models.User, *echo.HTTPError) {
 	user := u.getUserByUsername(input.UsernameOrEmail, db)
 	if user == nil {
@@ -74,6 +77,7 @@ func (u *UsersTable) LoginByUsername(input *models.UserInput, db *gorm.DB) (*mod
 	return user, nil
 }
 
+// Change Password change user password
 func (u *UsersTable) ChangePassword(id, newPassword string, db *gorm.DB) (*models.User, *echo.HTTPError) {
 	user := u.GetUserByid(id, db)
 	if user == nil {
@@ -86,6 +90,7 @@ func (u *UsersTable) ChangePassword(id, newPassword string, db *gorm.DB) (*model
 	return user, nil
 }
 
+// retrieve user by username
 func (u *UsersTable) getUserByUsername(username string, db *gorm.DB) *models.User {
 	var user models.User
 
@@ -98,6 +103,7 @@ func (u *UsersTable) getUserByUsername(username string, db *gorm.DB) *models.Use
 	return &user
 }
 
+// return user by email
 func (u *UsersTable) GetUserByEmail(email string, db *gorm.DB) *models.User {
 	var user models.User
 
@@ -110,6 +116,7 @@ func (u *UsersTable) GetUserByEmail(email string, db *gorm.DB) *models.User {
 	return &user
 }
 
+// return user by id
 func (u *UsersTable) GetUserByid(id interface{}, db *gorm.DB) *models.User {
 	var user models.User
 

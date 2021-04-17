@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Connect return a gorm.DB instacne
 func Connect() (*gorm.DB, error) {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("unable to read env.")

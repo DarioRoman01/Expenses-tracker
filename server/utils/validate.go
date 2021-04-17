@@ -7,6 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// Validate users input when they are register
 func ValidateRegister(input models.UserRegisterInput) *echo.HTTPError {
 	if len(input.Username) < 3 {
 		return InvalidInput("username", "username must be at least 3 characters")
@@ -27,6 +28,8 @@ func ValidateRegister(input models.UserRegisterInput) *echo.HTTPError {
 	return nil
 }
 
+// return a bad request error with a field and
+// message for the error.
 func InvalidInput(field, message string) *echo.HTTPError {
 	return echo.NewHTTPError(400, models.ErrorMessage{
 		Field:   field,

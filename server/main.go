@@ -28,6 +28,9 @@ func main() {
 	e.Pre(cache.Sessions("qid", *store))
 	e.Use(middleware.RemoveTrailingSlash())
 
+	// set routes
 	routes.Router(e)
-	e.Logger.Fatal(e.Start(":1323"))
+
+	// start server
+	e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
 }
