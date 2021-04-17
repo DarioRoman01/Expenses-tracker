@@ -42,7 +42,8 @@ func (e *ExpensesTable) GetUserExpenses(userId int, limit int, cursor *string, d
 
 	if cursor != nil {
 		db.Raw(`
-			SELECT * FROM "expenses"
+			SELECT e.*,
+			FROM expenses e
 			WHERE user_id = ?
 			WHERE created_at < ?
 			ORBER BY created_at DESC
@@ -50,10 +51,11 @@ func (e *ExpensesTable) GetUserExpenses(userId int, limit int, cursor *string, d
 		`, userId, cursor, limit).Find(&expenses)
 	} else {
 		db.Raw(`
-			SELECT * FROM "expenses"
+			select e.*,
+			FROM expenses as e
 			WHERE user_id = ?
-			ORBER BY created_at DESC
-			LIMIT ?
+			ORDER BY created_at DESC
+			LIMIT ?;
 		`, userId, limit).Find(&expenses)
 	}
 
@@ -74,7 +76,7 @@ func (e *ExpensesTable) GetExpenseByCategory(userId int, category string, db *go
 	db.Raw(`
 		SELECT * FROM "expenses"
 		WHERE user_id = ?
-		WHERE category = ?
+		WHERE category_name = ?
 		ORDER BY created_at DESC
 	`, userId, category).Find(&expenses)
 
@@ -85,10 +87,29 @@ func (e *ExpensesTable) GetExpenseByCategory(userId int, category string, db *go
 	return expenses, nil
 }
 
-func (e *ExpensesTable) CreateCategory(category *models.Category, db *gorm.DB) (*models.Category, *echo.HTTPError) {
-	if err := db.Create(&category).Error; err != nil {
-		return nil, echo.NewHTTPError(500, "unable to create expense")
+func (e *ExpensesTable) GetCategorys(db *gorm.DB) ([]*models.Category, *echo.HTTPError) {
+	var categorys []*models.Category
+
+	db.Find(&categorys)
+
+	if len(categorys) == 0 {
+		return nil, echo.NewHTTPError(500, "somethin wrong happend :(")
 	}
 
-	return category, nil
+	return categorys, nil
+}
+
+func (e *ExpensesTable) GetAvarageAmount(userId int, db *gorm.DB) (float64, *echo.HTTPError) {
+	var avarage float64
+
+	db.Raw(`
+	SELECT AVG(amount) FROM expenses
+	WHERE user_id = ?
+	`, userId).Find(&avarage)
+
+	if avarage == 0 {
+		return 0, echo.NewHTTPError(500, "something wrong happend")
+	}
+
+	return avarage, nil
 }
