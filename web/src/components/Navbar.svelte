@@ -8,10 +8,10 @@
     <h2 class="navbar-title">Expenses Tracker</h2>
   </div>
   <div class="navbar-links">
-    <button class="navbar-login" on:click={$goto("./Login")}>
+    <button class="navbar-login" on:click={$goto("./login")}>
       Login
     </button>
-    <button class="navbar-register" on:click={$goto("./Register")}>
+    <button class="navbar-register" on:click={$goto("./register")}>
       Register
     </button>
   </div>
