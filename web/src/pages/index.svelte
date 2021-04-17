@@ -7,7 +7,7 @@
 <main>
 	<Navbar />
 	<h1>Welcome to expense tracker</h1>
-	<a href={$url("./Register")}>Register</a>
-	<a href={$url("./Login")}>Login</a>
+	<a href={$url("./register")}>Register</a>
+	<a href={$url("./login")}>Login</a>
 </main>
 
