@@ -10,6 +10,8 @@ type User struct {
 	Username  string     `json:"username"`
 	Email     string     `json:"email"`
 	Password  string     `json:"-"`
+	Expenses  []Expenses `json:"-" gorm:"foreignKey:UserID;references:ID"`
+	Categorys []Category `json:"-" gorm:"foreignKey:UserID;references:ID"`
 }
 
 // User input for login
