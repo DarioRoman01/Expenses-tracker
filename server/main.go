@@ -16,7 +16,7 @@ func main() {
 		log.Fatal("unable to read env")
 	}
 
-	//instance echo instance and dbs
+	//instance echo instance and redis client
 	e := echo.New()
 	store := cache.SessionsClient()
 

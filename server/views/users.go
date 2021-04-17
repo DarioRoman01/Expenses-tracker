@@ -84,8 +84,12 @@ func (u *UsersViews) LoginView(c echo.Context) error {
 // Forgot Password View check if the email is in use and
 // send an email to users email
 func (u *UsersViews) ForgotPasswordView(c echo.Context) error {
-	email := c.FormValue("email")
-	user := usersTable.GetUserByEmail(email, u.DB)
+	var email map[string]string
+	err := (&echo.DefaultBinder{}).BindBody(c, &email)
+	if err != nil {
+		return c.JSON(423, "unable to parse request body")
+	}
+	user := usersTable.GetUserByEmail(email["email"], u.DB)
 	if user == nil {
 		return utils.InvalidInput("email", "email does not exist")
 	}
@@ -102,29 +106,34 @@ func (u *UsersViews) ForgotPasswordView(c echo.Context) error {
 // Change password view validate if given token is store in redis
 // and validate that the token is valid and the new password
 func (u *UsersViews) ChangePasswordView(c echo.Context) error {
-	newPassword := c.FormValue("newPassword")
-	if len(newPassword) < 4 {
+	var body map[string]string
+	err := (&echo.DefaultBinder{}).BindBody(c, &body)
+	if err != nil {
+		return c.JSON(400, "unable to parse request body")
+	}
+
+	if len(body["newPassword"]) < 4 {
 		return utils.InvalidInput("newPassword", "password must be at least 4 characters")
 	}
 
 	ctx := context.Background()
-	token := c.FormValue("token")
 	redis := cache.Client()
-	userId := redis.Get(ctx, fmt.Sprintf("forgot-password:%s", token))
+	key := fmt.Sprintf("forgot-password:%s", body["token"])
+	userId := redis.Get(ctx, key)
 
 	if userId.Val() == "" {
 		return utils.InvalidInput("token", "invalid token")
 	}
 
-	user, err := usersTable.ChangePassword(userId.Val(), newPassword, u.DB)
+	user, httpErr := usersTable.ChangePassword(userId.Val(), body["newPassword"], u.DB)
 	if err != nil {
-		return c.JSON(err.Code, err.Message)
+		return c.JSON(httpErr.Code, httpErr.Message)
 	}
 
 	session := cache.Default(c)
 	session.Set("userId", user.ID)
 	session.Save()
-
+	redis.Del(ctx, key)
 	return c.JSON(200, "password changed succesfully")
 }
 
