@@ -15,8 +15,9 @@ func Router(e *echo.Echo) {
 		log.Fatal("unable to connect to postgres: ", err)
 	}
 
-	psql.AutoMigrate(&models.User{})
+	psql.AutoMigrate(&models.User{}, &models.Category{}, &models.Expenses{})
 	usersViews := views.UsersViews{DB: psql}
+	expensesviews := views.ExpensesViews{DB: psql}
 
 	// users views
 	e.POST("/signup", usersViews.SignupView)
@@ -25,4 +26,11 @@ func Router(e *echo.Echo) {
 	e.POST("logout", usersViews.LogoutView)
 	e.POST("/forgot-password", usersViews.ForgotPasswordView)
 	e.POST("/change-password", usersViews.ChangePasswordView)
+
+	// Expenses views
+	e.GET("/expenses", expensesviews.ExpensesView)
+	e.GET("/expenses/:category", expensesviews.ExpensesByCategoryView)
+	e.POST("/expenses", expensesviews.AddExpenseView)
+	e.GET("/categorys", expensesviews.GetCategorysView)
+	e.GET("/categorys/avarage", expensesviews.AvarageAmountView)
 }

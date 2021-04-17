@@ -21,11 +21,9 @@ func main() {
 	store := cache.SessionsClient()
 
 	// middlewares
-	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins:     []string{os.Getenv("CORS_ORIGIN")},
-		AllowCredentials: true,
-	}))
 	e.Pre(cache.Sessions("qid", *store))
+	e.Use(routes.IsAuth)
+	e.Use(routes.CORSConfig())
 	e.Use(middleware.RemoveTrailingSlash())
 
 	// set routes
