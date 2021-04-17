@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"CodePonder/cache"
 	"CodePonder/models"
 	"strings"
 
@@ -35,4 +36,14 @@ func InvalidInput(field, message string) *echo.HTTPError {
 		Field:   field,
 		Message: message,
 	})
+}
+
+func IsLoggedIn(c echo.Context) (int, *echo.HTTPError) {
+	session := cache.Default(c)
+	userId := session.Get("userId")
+	if userId == "" {
+		return 0, echo.NewHTTPError(401, "not authenticated")
+	}
+
+	return userId.(int), nil
 }

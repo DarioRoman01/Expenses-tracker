@@ -12,6 +12,11 @@ type Expenses struct {
 	UserID       int
 }
 
+type PaginatedExpenses struct {
+	Expenses []Expenses `json:"expenses"`
+	HasMore  bool       `json:"hasMore"`
+}
+
 type Category struct {
 	ID       int    `json:"id"`
 	Name     string `json:"name"`

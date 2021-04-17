@@ -33,11 +33,12 @@ func (e *ExpensesTable) DeleteExpense(id string, userId int, db *gorm.DB) *echo.
 	return nil
 }
 
-func (e *ExpensesTable) GetUserExpenses(userId int, limit int, cursor *string, db *gorm.DB) ([]models.Expenses, *echo.HTTPError) {
+func (e *ExpensesTable) GetUserExpenses(userId int, limit int, cursor *string, db *gorm.DB) ([]models.Expenses, *echo.HTTPError, bool) {
 	var expenses []models.Expenses
 	if limit > 50 {
 		limit = 50
 	}
+	limit++
 
 	if cursor != nil {
 		db.Raw(`
@@ -56,13 +57,26 @@ func (e *ExpensesTable) GetUserExpenses(userId int, limit int, cursor *string, d
 		`, userId, limit).Find(&expenses)
 	}
 
-	return expenses, nil
+	if len(expenses) == 0 {
+		return nil, echo.NewHTTPError(400, "invalid limit"), false
+	}
+
+	if len(expenses) == limit {
+		return expenses[0 : limit-1], nil, true
+	}
+
+	return expenses[0 : len(expenses)-1], nil, false
 }
 
-func (e *ExpensesTable) GetExpenseByCategory(category string, db *gorm.DB) ([]models.Expenses, *echo.HTTPError) {
+func (e *ExpensesTable) GetExpenseByCategory(userId int, category string, db *gorm.DB) ([]models.Expenses, *echo.HTTPError) {
 	var expenses []models.Expenses
 
-	db.Model(&models.Expenses{}).Where("category = ?", category).Find(&expenses)
+	db.Raw(`
+		SELECT * FROM "expenses"
+		WHERE user_id = ?
+		WHERE category = ?
+		ORDER BY created_at DESC
+	`, userId, category).Find(&expenses)
 
 	if len(expenses) == 0 {
 		return nil, echo.NewHTTPError(404, "invalid category")
