@@ -93,9 +93,7 @@ func (u *UsersTable) ChangePassword(id, newPassword string, db *gorm.DB) (*model
 // retrieve user by username
 func (u *UsersTable) getUserByUsername(username string, db *gorm.DB) *models.User {
 	var user models.User
-
 	db.Model(&models.User{}).Where("username = ?", username).Find(&user)
-
 	if user.ID == 0 {
 		return nil
 	}
@@ -106,9 +104,7 @@ func (u *UsersTable) getUserByUsername(username string, db *gorm.DB) *models.Use
 // return user by email
 func (u *UsersTable) GetUserByEmail(email string, db *gorm.DB) *models.User {
 	var user models.User
-
 	db.Model(&models.User{}).Where("email = ?", email).Find(&user)
-
 	if user.ID == 0 {
 		return nil
 	}
@@ -119,7 +115,6 @@ func (u *UsersTable) GetUserByEmail(email string, db *gorm.DB) *models.User {
 // return user by id
 func (u *UsersTable) GetUserByid(id interface{}, db *gorm.DB) *models.User {
 	var user models.User
-
 	db.First(&user, id)
 	if user.ID == 0 {
 		return nil

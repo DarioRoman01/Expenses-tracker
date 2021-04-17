@@ -53,7 +53,9 @@
           bind:value={password}
         />
         {#if error}
-          <p>{error.message}</p>
+        <div class="error-container">
+          <p style="color: #003049;">{error.message}</p>
+        </div>
         {/if}
       </div>
       <button type="submit">Login</button>
@@ -66,8 +68,8 @@
 
 <style>
   main {
-    margin-left: 20%;
-    margin-right: 20%;
+    margin-left: 30%;
+    margin-right: 30%;
   }
   form {
     border: 5px solid #f1f1f1;
@@ -110,5 +112,14 @@
   .container {
     padding: 16px 0;
     text-align: center;
+  }
+
+  .error-container {
+    background-color: #c1121f;
+    /* padding: 1px 0px; */
+  }
+
+  .error-container p {
+    font-size: large;
   }
 </style>
