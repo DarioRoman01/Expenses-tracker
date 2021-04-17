@@ -8,8 +8,8 @@ type Expenses struct {
 	UpdatedAt    *time.Time `json:"updatedAt"`
 	Description  string     `json:"description"`
 	Amount       int64      `json:"amount"`
-	CategoryName string     `json:"category"`
-	UserID       int
+	CategoryName string     `json:"category,omitempty"`
+	UserID       int        `json:"userID"`
 }
 
 type PaginatedExpenses struct {
@@ -18,8 +18,7 @@ type PaginatedExpenses struct {
 }
 
 type Category struct {
-	ID       int    `json:"id"`
-	Name     string `json:"name"`
-	UserID   int
-	Expenses []Expenses `gorm:"foreignKey:CategoryName;references:Name"`
+	ID       int        `json:"id" gorm:"primaryKey"`
+	Name     string     `json:"name" gorm:"unique"`
+	Expenses []Expenses `json:"-" gorm:"foreignKey:CategoryName;references:Name"`
 }
