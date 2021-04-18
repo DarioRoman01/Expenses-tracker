@@ -33,9 +33,9 @@
   }
 </script>
 
-<Navbar />
+<Navbar isLoggedIn={false}/>
 <main>
-  <form action="#" on:submit={login}>
+  <form action="#" on:submit|preventDefault={login}>
     <h1>Login Form</h1>
     <div class="formcontainer">
       <hr />

@@ -36,7 +36,7 @@
   }
 </script>
 
-<Navbar />
+<Navbar isLoggedIn={false}/>
 <main>
   <form action="#" on:submit|preventDefault={register}>
     <h1>Register</h1>

@@ -32,7 +32,7 @@
   }
 </script>
 
-<Navbar />
+<Navbar isLoggedIn={false} />
 <main>
   <form action="#" on:submit|preventDefault={chagePassword}>
     <h1>Forgot Password</h1>

@@ -34,7 +34,7 @@
   }
 </script>
 
-<Navbar />
+<Navbar isLoggedIn={false}/>
 <main>
   {#if !send}
     <form action="#" on:submit|preventDefault={forgotPassword}>
