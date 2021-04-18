@@ -1,5 +1,7 @@
-<script>
+<script lang="ts">
   import { url, goto } from "@roxi/routify"
+	export let isLoggedIn: boolean;
+	
 </script>
 
 
@@ -8,12 +10,21 @@
     <h2 class="navbar-title">Expenses Tracker</h2>
   </div>
   <div class="navbar-links">
-    <button class="navbar-login" on:click={$goto("./login")}>
-      Login
-    </button>
-    <button class="navbar-register" on:click={$goto("./register")}>
-      Register
-    </button>
+		{#if isLoggedIn}
+			<button class="navbar-expenses">
+				Add Expenses
+			</button>
+			<button class="navbar-logout">
+				logout
+			</button>
+		{:else}
+			<button class="navbar-login" on:click={$goto("./login")}>
+				Login
+			</button>
+			<button class="navbar-register" on:click={$goto("./register")}>
+				Register
+			</button>
+		{/if}
   </div>
 </nav>
 
@@ -30,6 +41,7 @@
   }
 
   .navbar-links {
+		display: flex;
     padding-top: 10px;
     align-content: center;
     text-decoration: none;
@@ -61,4 +73,23 @@
   .navbar-login:hover, .navbar-register:hover {
     background-color: #003b5a;
   }
+
+	.navbar-expenses {
+		background-color: #003049;
+    border: #ffffff 1px solid;
+    border-radius: 10px;
+    color: #ffffff;
+    margin-right: 10px;
+	}
+
+	.navbar-logout {
+		background-color: #003049;
+    border: #ffffff 1px solid;
+    border-radius: 10px;
+    color: #ffffff;
+    margin-right: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+	}
+
 </style>
