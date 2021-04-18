@@ -16,8 +16,7 @@ type ExpensesViews struct {
 var expensesTable *controllers.ExpensesTable
 
 func (e *ExpensesViews) AddExpenseView(c echo.Context) error {
-	id := c.Request().Context().Value("user")
-	userId := id.(int)
+	userId := c.Request().Context().Value("user").(int)
 
 	var expense models.Expenses
 	if err := c.Bind(&expense); err != nil {
@@ -34,9 +33,7 @@ func (e *ExpensesViews) AddExpenseView(c echo.Context) error {
 }
 
 func (e *ExpensesViews) ExpensesView(c echo.Context) error {
-	id := c.Request().Context().Value("user")
-	userId := id.(int)
-
+	userId := c.Request().Context().Value("user").(int)
 	limit := c.QueryParam("limit")
 	intLimit, err := strconv.Atoi(limit)
 	if err != nil {
@@ -56,8 +53,7 @@ func (e *ExpensesViews) ExpensesView(c echo.Context) error {
 }
 
 func (e *ExpensesViews) ExpensesByCategoryView(c echo.Context) error {
-	id := c.Request().Context().Value("user")
-	userId := id.(int)
+	userId := c.Request().Context().Value("user").(int)
 
 	category := c.QueryParam("category")
 	expenses, err := expensesTable.GetExpenseByCategory(userId, category, e.DB)
@@ -69,8 +65,7 @@ func (e *ExpensesViews) ExpensesByCategoryView(c echo.Context) error {
 }
 
 func (e *ExpensesViews) DeleteExpenseView(c echo.Context) error {
-	id := c.Request().Context().Value("user")
-	userId := id.(int)
+	userId := c.Request().Context().Value("user").(int)
 	err := expensesTable.DeleteExpense(c.Param("id"), userId, e.DB)
 	if err != nil {
 		return c.JSON(err.Code, err.Message)
@@ -89,8 +84,7 @@ func (e *ExpensesViews) GetCategorysView(c echo.Context) error {
 }
 
 func (e *ExpensesViews) AvarageAmountView(c echo.Context) error {
-	id := c.Request().Context().Value("user")
-	userId := id.(int)
+	userId := c.Request().Context().Value("user").(int)
 
 	avarage, err := expensesTable.GetAvarageAmount(userId, e.DB)
 	if err != nil {

@@ -21,9 +21,9 @@ func main() {
 	store := cache.SessionsClient()
 
 	// middlewares
-	e.Pre(cache.Sessions("qid", *store))
-	e.Use(routes.IsAuth)
 	e.Use(routes.CORSConfig())
+	e.Use(cache.Sessions("qid", *store))
+	e.Use(routes.IsAuth)
 	e.Use(middleware.RemoveTrailingSlash())
 
 	// set routes

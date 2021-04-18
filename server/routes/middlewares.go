@@ -3,15 +3,13 @@ package routes
 import (
 	"CodePonder/utils"
 	"context"
+	"log"
 	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
-
-type ContextKey string
-
-const ContextUserKey ContextKey = "user"
 
 var SkipperRoutes = [4]string{"/login", "/signup", "/forgot-password", "/change-password"}
 
@@ -26,13 +24,16 @@ func IsAuth(next echo.HandlerFunc) echo.HandlerFunc {
 			return c.JSON(err.Code, err.Message)
 		}
 
-		ctx := context.WithValue(c.Request().Context(), ContextUserKey, userId)
+		ctx := context.WithValue(c.Request().Context(), "user", userId)
 		c.SetRequest(c.Request().WithContext(ctx))
 		return next(c)
 	}
 }
 
 func CORSConfig() echo.MiddlewareFunc {
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("unable to read env")
+	}
 	cors := middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins:     []string{os.Getenv("CORS_ORIGIN")},
 		AllowCredentials: true,

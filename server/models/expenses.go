@@ -9,7 +9,7 @@ type Expenses struct {
 	Description  string     `json:"description"`
 	Amount       int64      `json:"amount"`
 	CategoryName string     `json:"category,omitempty"`
-	UserID       int        `json:"userID"`
+	UserID       int        `json:"user_id"`
 }
 
 type PaginatedExpenses struct {

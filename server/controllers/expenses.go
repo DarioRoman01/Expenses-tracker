@@ -40,9 +40,9 @@ func (e *ExpensesTable) GetUserExpenses(userId int, limit int, cursor *string, d
 	}
 	limit++
 
-	if cursor != nil {
+	if cursor != nil && *cursor != "" {
 		db.Raw(`
-			SELECT e.*,
+			SELECT e.*
 			FROM expenses e
 			WHERE user_id = ?
 			WHERE created_at < ?
@@ -51,8 +51,8 @@ func (e *ExpensesTable) GetUserExpenses(userId int, limit int, cursor *string, d
 		`, userId, cursor, limit).Find(&expenses)
 	} else {
 		db.Raw(`
-			select e.*,
-			FROM expenses as e
+			select e.*
+			FROM expenses e
 			WHERE user_id = ?
 			ORDER BY created_at DESC
 			LIMIT ?;

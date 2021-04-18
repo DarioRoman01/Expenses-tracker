@@ -41,7 +41,7 @@ func InvalidInput(field, message string) *echo.HTTPError {
 func IsLoggedIn(c echo.Context) (int, *echo.HTTPError) {
 	session := cache.Default(c)
 	userId := session.Get("userId")
-	if userId == "" {
+	if userId == "" || userId == nil {
 		return 0, echo.NewHTTPError(401, "not authenticated")
 	}
 
