@@ -1,6 +1,16 @@
 <script lang="ts">
-  import { url, goto } from "@roxi/routify"
+  import { url, goto } from "@roxi/routify";
 	export let isLoggedIn: boolean;
+
+  async function logout() {
+    const res = await fetch("http://localhost:1323/logout", {
+      method: "post",
+      credentials: "include"
+    });
+    if (res.ok) {
+      $goto("./index");
+    }
+  }
 	
 </script>
 
@@ -11,10 +21,10 @@
   </div>
   <div class="navbar-links">
 		{#if isLoggedIn}
-			<button class="navbar-expenses">
+			<button class="navbar-expenses" on:click={$goto("./create-expense")}>
 				Add Expenses
 			</button>
-			<button class="navbar-logout">
+			<button class="navbar-logout" on:click={logout}>
 				logout
 			</button>
 		{:else}
