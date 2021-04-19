@@ -21,6 +21,11 @@ export interface ExpensesResponse {
   hasMore: boolean;
 }
 
+export interface Category {
+  id: number;
+  name: string;
+}
+
 export default async function api<T>(url: string): Promise<T> {
   const response = await fetch(url, {
     credentials: 'include',
