@@ -12,7 +12,6 @@ import autoPreprocess from 'svelte-preprocess'
 import postcssImport from 'postcss-import'
 import { injectManifest } from 'rollup-plugin-workbox'
 
-
 const { distDir } = getConfig() // use Routify's distDir for SSOT
 const assetsDir = 'assets'
 const buildDir = `${distDir}/build`

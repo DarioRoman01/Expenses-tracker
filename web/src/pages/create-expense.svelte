@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Navbar from "../components/Navbar.svelte";
+  import Navbar from "../components/Navbar2.svelte";
   import { goto } from "@roxi/routify";
   import api from "../services/users";
   import type { Category } from "../services/users";

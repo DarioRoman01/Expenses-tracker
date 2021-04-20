@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Navbar from "../components/Navbar.svelte";
+  import Navbar from "../components/Navbar2.svelte";
   import { goto, url } from "@roxi/routify";
   let username: string;
   let email: string;

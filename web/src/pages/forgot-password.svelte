@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Navbar from "../components/Navbar.svelte";
+  import Navbar from "../components/Navbar2.svelte";
   let email: string;
   let error: Error;
   let send: boolean;
