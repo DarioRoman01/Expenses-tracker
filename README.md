@@ -15,3 +15,4 @@ Frontend:
 * TypeScript
 * Svelte
 * Routify
+* Svelte Materialify
