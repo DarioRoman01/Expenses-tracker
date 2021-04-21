@@ -65,9 +65,9 @@ export const deleteExpense = async (id: number) => {
 
 export const updateExpense = async (
   id: number,
-  description?: string,
-  amount?: number,
-  category?: string,
+  description: string,
+  amount: number,
+  category: string,
 ): Promise<Expense> => {
   const res = await fetch(`http://localhost:1323/expenses/${id}`, {
     method: "PATCH",

@@ -54,7 +54,7 @@
         <List>
           {#if categorys}
             {#each categorys as category }
-              <ListItem bind:value={categoryo}>
+              <ListItem on:click={() => categoryo = category.name}>
                 {category.name}
               </ListItem>
             {/each}
