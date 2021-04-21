@@ -33,13 +33,13 @@
 
 
 <MaterialApp>
-  <Navbar isLoggedIn={false}/>
+  <Navbar isLoggedIn={true}/>
   <div class="d-flex justify-center mt-4">
     <div class="d-flex flex-column">
-      <h3 class="text-h3 mb-6">Login</h3>
+      <h3 class="text-h3 mb-6">Add expense</h3>
       <div style="width: 700px;" class="mb-4 mt-3">
         <TextField bind:value={amount}>
-          username
+          amount
         </TextField>
       </div>
       <div style="width: 700px;">
@@ -48,7 +48,7 @@
         </TextField>
       </div>
       <Menu>
-        <div slot="activator">
+        <div slot="activator" class="mt-4">
           <Button>categorys</Button>
         </div>
         <List>

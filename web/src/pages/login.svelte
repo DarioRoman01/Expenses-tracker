@@ -11,7 +11,7 @@
   const usernameRules = [(v: any) => !!v || 'Required'];
   const passwordRules = [
     (v: any) => !!v || 'Required',
-    (v: string|any[]) => v.length <= 4 || 'must be 4 characters',
+    (v: any) => v.length >= 4 || 'must be 4 characters',
   ]
 
   const handleLogin = () => {
