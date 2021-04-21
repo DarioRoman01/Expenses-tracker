@@ -113,3 +113,23 @@ func (e *ExpensesTable) GetAvarageAmount(userId int, db *gorm.DB) (float64, *ech
 
 	return avarage, nil
 }
+
+func (e *ExpensesTable) ModifyExpense(userId int, id string, data models.Expenses, db *gorm.DB) (*models.Expenses, *echo.HTTPError) {
+	var storeExpense models.Expenses
+
+	db.First(&storeExpense, id)
+
+	if storeExpense.ID == 0 {
+		return nil, echo.NewHTTPError(404, "post not found")
+	}
+
+	if storeExpense.UserID != userId {
+		return nil, echo.NewHTTPError(403, "you do not have permissions to perform this action")
+	}
+
+	if err := db.Model(&storeExpense).Updates(data); err != nil {
+		return nil, echo.NewHTTPError(500, "unable to update expense")
+	}
+
+	return &storeExpense, nil
+}
