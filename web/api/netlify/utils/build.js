@@ -1,12 +1,3 @@
-/**
- * Creates a JSON and inlines it with esbuild for ssr.js to consume
- * {
- *   data: duh,
- *   script: inlined main.js
- *   template: __app.html
- * }
- */
-
 const { resolve } = require('path')
 const { readFileSync, writeFileSync } = require('fs')
 const { build } = require('esbuild')
