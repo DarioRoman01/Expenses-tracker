@@ -32,7 +32,8 @@ func Router(e *echo.Echo) {
 	e.GET("/expenses/:category", expensesviews.ExpensesByCategoryView)
 	e.POST("/expenses", expensesviews.AddExpenseView)
 	e.GET("/categorys", expensesviews.GetCategorysView)
-	e.GET("/categorys/avarage", expensesviews.AvarageAmountView)
+	e.GET("/expenses/avarage", expensesviews.AvarageAmountView)
 	e.DELETE("/expenses/:id", expensesviews.DeleteExpenseView)
-	e.PATCH("expenses/:id", expensesviews.UpdateExpenseView)
+	e.PATCH("/expenses/:id", expensesviews.UpdateExpenseView)
+	e.GET("expenses/:id", expensesviews.ExpenseView)
 }

@@ -95,6 +95,7 @@ func (e *ExpensesViews) AvarageAmountView(c echo.Context) error {
 }
 
 func (e *ExpensesViews) UpdateExpenseView(c echo.Context) error {
+	id := c.ParamValues()[0]
 	userId := c.Request().Context().Value("user").(int)
 
 	var data models.Expenses
@@ -102,7 +103,19 @@ func (e *ExpensesViews) UpdateExpenseView(c echo.Context) error {
 		return echo.NewHTTPError(423, "unable to parse request body")
 	}
 
-	expense, err := expensesTable.ModifyExpense(userId, c.Param("id"), data, e.DB)
+	expense, err := expensesTable.ModifyExpense(userId, id, data, e.DB)
+	if err != nil {
+		return c.JSON(err.Code, err.Message)
+	}
+
+	return c.JSON(200, expense)
+}
+
+func (e *ExpensesViews) ExpenseView(c echo.Context) error {
+	userId := c.Request().Context().Value("user").(int)
+	id := c.ParamValues()[0]
+
+	expense, err := expensesTable.GetExpense(id, userId, e.DB)
 	if err != nil {
 		return c.JSON(err.Code, err.Message)
 	}

@@ -33,6 +33,22 @@ func (e *ExpensesTable) DeleteExpense(id string, userId int, db *gorm.DB) *echo.
 	return nil
 }
 
+func (e *ExpensesTable) GetExpense(id string, userId int, db *gorm.DB) (*models.Expenses, *echo.HTTPError) {
+	var expense models.Expenses
+
+	db.Model(&models.Expenses{}).Where("id = ?", id).Find(&expense)
+
+	if expense.ID == 0 {
+		return nil, echo.NewHTTPError(404, "expense not found")
+	}
+
+	if expense.UserID != userId {
+		return nil, echo.NewHTTPError(404, "you do not have permissions to perfom this action")
+	}
+
+	return &expense, nil
+}
+
 func (e *ExpensesTable) GetUserExpenses(userId int, limit int, cursor *string, db *gorm.DB) ([]models.Expenses, *echo.HTTPError, bool) {
 	var expenses []models.Expenses
 	if limit > 50 {
@@ -117,8 +133,7 @@ func (e *ExpensesTable) GetAvarageAmount(userId int, db *gorm.DB) (float64, *ech
 func (e *ExpensesTable) ModifyExpense(userId int, id string, data models.Expenses, db *gorm.DB) (*models.Expenses, *echo.HTTPError) {
 	var storeExpense models.Expenses
 
-	db.First(&storeExpense, id)
-
+	db.Model(&models.Expenses{}).Where("id = ?", id).Find(&storeExpense)
 	if storeExpense.ID == 0 {
 		return nil, echo.NewHTTPError(404, "post not found")
 	}
@@ -127,7 +142,7 @@ func (e *ExpensesTable) ModifyExpense(userId int, id string, data models.Expense
 		return nil, echo.NewHTTPError(403, "you do not have permissions to perform this action")
 	}
 
-	if err := db.Model(&storeExpense).Updates(data); err != nil {
+	if err := db.Model(&storeExpense).Updates(data).Error; err != nil {
 		return nil, echo.NewHTTPError(500, "unable to update expense")
 	}
 
