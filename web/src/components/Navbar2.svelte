@@ -28,7 +28,7 @@
       <Button class="primary-color" on:click={$goto("./create-expense")}>
         Add
       </Button>
-      <Button class="ml-3 primary-color" on:click={logout}>
+      <Button class="ml-3 mr-1 primary-color" on:click={logout}>
         logout
       </Button>
     {:else}

@@ -19,6 +19,10 @@
     const res = deleteExpense(expense.id);
     res.then(() => dispatch('remove', expense));
   }
+
+  const dispatchUpdate = () => {
+    dispatch("update")
+  }
 </script>
 
 <MaterialApp>
@@ -41,7 +45,7 @@
             <Button class="mr-3 primary-color" on:click={handleDelete}>
               <Icon path={mdiTrashCan} />
             </Button>
-            <Button class="primary-color">
+            <Button class="primary-color" on:click={dispatchUpdate}>
               <Icon path={mdiPen} />
             </Button>
           </CardActions>
