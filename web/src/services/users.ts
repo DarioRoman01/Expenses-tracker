@@ -112,24 +112,3 @@ export interface User {
   username: string;
   email: string;
 }
-
-export interface Expense {
-  id: number;
-  createdAt: string;
-  updatedAt: string;
-  description: string;
-  amount: number;
-  category: string;
-  user_id: number;
-}
-
-export interface ExpensesResponse {
-  expenses: Expense[];
-  hasMore: boolean;
-}
-
-export interface Category {
-  id: number;
-  name: string;
-}
-
