@@ -1,8 +1,9 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import api from "../services/users"
-  import type {ExpensesResponse} from "../services/users";
-  import ExpenseCard from "./ExpenseCard.svelte"
+  import api from "../services/users";
+  import type {ExpensesResponse} from "../services/expenses";
+  import ExpenseCard from "./ExpenseCard.svelte";
+  import { ProgressCircular, MaterialApp } from 'svelte-materialify';
 
   let expenses: ExpensesResponse;
   onMount(async () => {
@@ -11,28 +12,17 @@
 
 </script>
 
-<div class="expenses">
-{#if expenses}
-  {#each expenses.expenses as expense }
-    <div class="expense-container">
-      <ExpenseCard expense={expense}/>
-    </div>
-  {/each}
-{:else}
-  <p>loading...</p>
-{/if}
-</div>
-
-<style>
-  .expenses {
-    display: grid;
-    grid-template-rows: auto;
-    grid-column: auto;
-  }
-
-  .expense-container {
-    display: flex;
-    justify-content: center;
-    
-  }
-</style>
+<MaterialApp>
+  {#if expenses}
+    {#each expenses.expenses as expense }
+      <div class="d-flex flex-column">
+        <ExpenseCard expense={expense}/>
+      </div>
+    {/each}
+  {:else}
+    <ProgressCircular
+      size={50} 
+      indeterminate color="primary" 
+    />
+  {/if}
+</MaterialApp>

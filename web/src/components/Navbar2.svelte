@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { goto } from '@roxi/routify';
+  import { goto, url } from '@roxi/routify';
   import { AppBar, Button, Icon, Menu, ListItem, MaterialApp } from 'svelte-materialify';
   export let isLoggedIn: boolean;
 
@@ -16,7 +16,13 @@
 
 <MaterialApp>
   <AppBar>
-    <span slot="title">Expenses Tracker</span>
+    <span slot="title">
+      <a href={isLoggedIn ? $url("./home") : $url("./index")} 
+        class="text-decoration-none"
+      >
+        Expenses Tracker
+      </a>
+    </span>
     <div style="flex-grow:1" />
     {#if isLoggedIn}
       <Button class="primary-color" on:click={$goto("./create-expense")}>

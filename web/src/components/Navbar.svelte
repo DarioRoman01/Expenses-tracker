@@ -17,7 +17,9 @@
 
 <nav class="nav">
   <div>
-    <h2 class="navbar-title">Expenses Tracker</h2>
+    <h2 class="navbar-title">
+      <a href={$url("./index")}>Expenses Tracker</a>
+    </h2>
   </div>
   <div class="navbar-links">
 		{#if isLoggedIn}
