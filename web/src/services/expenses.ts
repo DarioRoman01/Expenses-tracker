@@ -22,7 +22,7 @@ export const addExpense = async (
   description: string,
   amount: number,
   category: string
-) => {
+): Promise<ExpensesResponse> => {
   const res = await fetch("http://localhost:1323/expenses", {
     method: "POST",
     body: JSON.stringify({

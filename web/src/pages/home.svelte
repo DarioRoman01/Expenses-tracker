@@ -13,25 +13,19 @@
     user = await api<User>("http://localhost:1323/me");
     if (user) {
       isLoggedIn = true;
-    } 
-  })
+    }
+  });
 
 </script>
 
 <Navbar isLoggedIn={isLoggedIn} />
 {#if user}
-  <div class="home-container">
-    <h1>Welcome {user.username}</h1>
-    <Expenses />
+  <div class="mt-4">
+    <h2 class="text-h2">Welcome {user.username}</h2>
+    <div class="mt-4">
+      <Expenses />
+    </div>
   </div>  
 {:else}
   <p>loading...</p>
 {/if}
-
-<style>
-  .home-container h1 {
-    text-align: left;
-    padding-left: 10px;
-    color: #003049;
-  }
-</style>

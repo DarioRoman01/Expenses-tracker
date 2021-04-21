@@ -1,7 +1,8 @@
 <script lang="ts">
   import Navbar from "../components/Navbar2.svelte";
+  import { login } from "../services/users";
   import { redirect, url } from "@roxi/routify";
-  import { Row, Col, TextField, Button, MaterialApp } from 'svelte-materialify';
+  import {TextField, Button, MaterialApp, Alert } from 'svelte-materialify';
 
   let usernameOrEmail: string;
   let password: string;
@@ -13,32 +14,9 @@
     (v: string|any[]) => v.length <= 4 || 'must be 4 characters',
   ]
 
-  async function login() {
-    try {
-      const res = await fetch("http://localhost:1323/login", {
-        method: "post",
-        body: JSON.stringify({
-          usernameOrEmail: usernameOrEmail,
-          password: password,
-        }),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
-
-      if (res.ok) {
-        $redirect("./home");
-      } else {
-        const err = await res.json();
-        console.log(err)
-        error = new Error(err.message);
-      }
-    } catch (err) {
-      console.log(err)
-      error = new Error(err);
-    }
+  const handleLogin = () => {
+    const user = login({usernameOrEmail, password});
+    user.then(() => $redirect("./home")).catch((err: Error) => error = err);
   }
 </script>
 
@@ -58,10 +36,18 @@
         </TextField>
       </div>
       <div style="align-self: center;" class="mt-4">
-        <Button size="large" class="primary-color" on:click={login}>
+        <Button size="large" class="primary-color" on:click={handleLogin}>
           Submit
         </Button>
+        <a href={$url("./forgot-password")} class="text-decoration-none ml-3">
+          forgot password?
+        </a>
       </div>
+      {#if error}
+        <Alert class="error-color">
+          {error.message}
+        </Alert>
+      {/if}
     </div>
   </div>
 </MaterialApp>
