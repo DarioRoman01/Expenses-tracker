@@ -1,7 +1,24 @@
 <script lang="ts">
   import type {Expense} from "../services/expenses";
-  import { Card, CardText, CardActions, Button, MaterialApp } from 'svelte-materialify';
+  import { deleteExpense } from "../services/expenses";
+  import { 
+    Card, 
+    CardText, 
+    CardActions, 
+    Button, 
+    MaterialApp,
+    Icon
+  } from 'svelte-materialify';
+  import { createEventDispatcher } from "svelte";
+  import { mdiTrashCan, mdiPen } from "@mdi/js";
+
   export let expense: Expense;
+  const dispatch = createEventDispatcher();
+
+  const handleDelete = () => {
+    const res = deleteExpense(expense.id);
+    res.then(() => dispatch('remove', expense));
+  }
 </script>
 
 <MaterialApp>
@@ -21,7 +38,12 @@
         </div>
         <div>
           <CardActions>
-            <Button rounded outlined>Button</Button>
+            <Button class="mr-3 primary-color" on:click={handleDelete}>
+              <Icon path={mdiTrashCan} />
+            </Button>
+            <Button class="primary-color">
+              <Icon path={mdiPen} />
+            </Button>
           </CardActions>
         </div>
       </div>
