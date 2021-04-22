@@ -152,6 +152,7 @@ func (u *UsersViews) MeView(c echo.Context) error {
 // Logout view handles users logout destroing sessions
 func (u *UsersViews) LogoutView(c echo.Context) error {
 	session := cache.Default(c)
+	session.Delete("userId")
 	session.Clear()
 	session.Save()
 	return c.JSON(200, true)

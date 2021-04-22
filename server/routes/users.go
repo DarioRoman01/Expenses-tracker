@@ -23,7 +23,7 @@ func Router(e *echo.Echo) {
 	e.POST("/signup", usersViews.SignupView)
 	e.POST("/login", usersViews.LoginView)
 	e.GET("/me", usersViews.MeView)
-	e.POST("logout", usersViews.LogoutView)
+	e.POST("/logout", usersViews.LogoutView)
 	e.POST("/forgot-password", usersViews.ForgotPasswordView)
 	e.POST("/change-password", usersViews.ChangePasswordView)
 
