@@ -61,13 +61,13 @@ export const deleteExpense = async (id: number) => {
   }
 
   return await res.json();
-}
+};
 
 export const updateExpense = async (
   id: number,
   description: string,
   amount: number,
-  category: string,
+  category: string
 ): Promise<Expense> => {
   const res = await fetch(`http://localhost:1323/expenses/${id}`, {
     method: "PATCH",
@@ -89,4 +89,43 @@ export const updateExpense = async (
   }
 
   return await res.json();
-}
+};
+
+export const getByCategory = async (
+  category: string
+): Promise<ExpensesResponse> => {
+  const res = await fetch(`http://localhost:1323/expenses/${category}`, {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    const err: string = await res.json();
+    throw new Error(err);
+  }
+
+  return await res.json();
+};
+
+export const getByDate = async (date: string): Promise<ExpensesResponse> => {
+  const res = await fetch(
+    `http://localhost:1323/expenses?limit=10&cursor=${date}`,
+    {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    }
+  );
+
+  if (!res.ok) {
+    const err: string = await res.json();
+    throw new Error(err);
+  }
+
+  return await res.json();
+};

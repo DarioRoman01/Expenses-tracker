@@ -1,13 +1,14 @@
 <script lang="ts">
   import Navbar from "../components/Navbar2.svelte";
   import {TextField, Button, MaterialApp, Alert } from 'svelte-materialify';
-  import { redirect, url } from "@roxi/routify";
+  import { redirect } from "@roxi/routify";
   import { register, emailRegex, CustomError } from "../services/users";
 
   let username: string;
   let email: string;
   let password: string;
   let error: CustomError;
+  let show: boolean;
 
   const usernameRules = [
     (v: string) => !!v || 'Required',
@@ -30,7 +31,10 @@
 
   const handleRegister = () => {
     const user = register({username, email, password});
-    user.then(() => $redirect("./home")).catch((err: CustomError) => error = err)
+    user.then(() => $redirect("./home")).catch((err: CustomError) => {
+      error = err
+      show = true;
+    })
   }
 
 </script>
@@ -42,7 +46,7 @@
       <h3 class="text-h3 mb-6">Register</h3>
       <div style="width: 700px;" class="mb-4 mt-3">
         <TextField 
-          error={error && error.field === "username" ? true : false} 
+          error={error && error.field === "username" ? true : false}
           bind:value={username} 
           rules={usernameRules}>
           username
@@ -59,8 +63,8 @@
       </div>
       <div style="width: 700px;">
         <TextField 
+          type="password"
           error={error && error.field === "password" ? true : false} 
-          type="password" 
           rules={passwordRules} 
           bind:value={password}
         >
@@ -73,7 +77,7 @@
         </Button>
       </div>
       {#if error}
-        <Alert class="error-color mt-4">
+        <Alert class="error-color mt-4" dismissible={true} bind:visible={show}>
           {error.message}
         </Alert>
       {/if}

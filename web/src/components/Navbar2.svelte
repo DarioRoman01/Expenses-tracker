@@ -1,6 +1,6 @@
 <script lang="ts">
   import { goto, url } from '@roxi/routify';
-  import { AppBar, Button, Icon, Menu, ListItem, MaterialApp } from 'svelte-materialify';
+  import { AppBar, Button, MaterialApp } from 'svelte-materialify';
   export let isLoggedIn: boolean;
 
   async function logout() {

@@ -105,9 +105,10 @@ export const changePassword = async (
   return await res.json();
 }
 
-
 export const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
+
+// custom error class for users signup and register requests
 export class CustomError extends Error {
   constructor(public field: string, public message: string) {
     super(message);
