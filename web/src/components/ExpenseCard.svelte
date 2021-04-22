@@ -21,7 +21,7 @@
   }
 
   const dispatchUpdate = () => {
-    dispatch("update")
+    dispatch("update", expense);
   }
 </script>
 
