@@ -2,16 +2,35 @@
   import Navbar from "../components/Navbar2.svelte";
   import {TextField, Button, MaterialApp, Alert } from 'svelte-materialify';
   import { redirect, url } from "@roxi/routify";
-  import { register } from "../services/users";
+  import { register, emailRegex, CustomError } from "../services/users";
 
   let username: string;
   let email: string;
   let password: string;
-  let error: Error;
+  let error: CustomError;
+
+  const usernameRules = [
+    (v: string) => !!v || 'Required',
+    (v: string) => v.length >= 3 || 'must be at least 3 characters',
+  ];
+
+  const emailRules = [
+    (v: string) => !!v || 'Required',
+    (v: string) => {
+      const pattern = emailRegex;
+      return pattern.test(v) || 'Invalid e-mail.';
+    },
+  ]
+
+  const passwordRules = [
+    (v: string) => !!v || 'Required',
+    (v: string) => v.length >= 4 || 'must be at least 4 characters',
+  
+  ]
 
   const handleRegister = () => {
     const user = register({username, email, password});
-    user.then(() => $redirect("./home")).catch((err: Error) => error = err)
+    user.then(() => $redirect("./home")).catch((err: CustomError) => error = err)
   }
 
 </script>
@@ -20,19 +39,31 @@
   <Navbar isLoggedIn={false}/>
   <div class="d-flex justify-center mt-4">
     <div class="d-flex flex-column">
-      <h3 class="text-h3 mb-6">Login</h3>
+      <h3 class="text-h3 mb-6">Register</h3>
       <div style="width: 700px;" class="mb-4 mt-3">
-        <TextField bind:value={username}>
+        <TextField 
+          error={error && error.field === "username" ? true : false} 
+          bind:value={username} 
+          rules={usernameRules}>
           username
         </TextField>
       </div>
       <div style="width: 700px;" class="mb-4 mt-3">
-        <TextField bind:value={email}>
+        <TextField 
+          error={error && error.field === "email" ? true : false}
+          bind:value={email} 
+          rules={emailRules}
+        >
           email
         </TextField>
       </div>
       <div style="width: 700px;">
-        <TextField type="password" bind:value={password}>
+        <TextField 
+          error={error && error.field === "password" ? true : false} 
+          type="password" 
+          rules={passwordRules} 
+          bind:value={password}
+        >
           password
         </TextField>
       </div>
@@ -42,7 +73,7 @@
         </Button>
       </div>
       {#if error}
-        <Alert class="error-color">
+        <Alert class="error-color mt-4">
           {error.message}
         </Alert>
       {/if}

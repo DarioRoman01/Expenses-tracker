@@ -6,14 +6,14 @@
   import { addExpense } from "../services/expenses";
   import { onMount } from "svelte";
   import {
-    TextField, 
-    Button, 
-    MaterialApp, 
+    TextField,
+    Button,
+    MaterialApp,
     Alert,
     Menu,
-    List, 
-    ListItem 
-  } from 'svelte-materialify';
+    List,
+    ListItem,
+  } from "svelte-materialify";
 
   let categorys: Category[];
   let amount: string;
@@ -23,38 +23,37 @@
 
   const handleClick = () => {
     const expense = addExpense(description, parseInt(amount), categoryo);
-    expense.then(() => $redirect("./home")).catch((err: Error) => error = err)
-  }
+    expense
+      .then(() => $redirect("./home"))
+      .catch((err: Error) => (error = err));
+  };
 
   onMount(async () => {
     categorys = await api<Category[]>("http://localhost:1323/categorys");
   });
 </script>
 
-
 <MaterialApp>
-  <Navbar isLoggedIn={true}/>
+  <Navbar isLoggedIn={true} />
   <div class="d-flex justify-center mt-4">
     <div class="d-flex flex-column">
       <h3 class="text-h3 mb-6">Add expense</h3>
       <div style="width: 700px;" class="mb-4 mt-3">
-        <TextField bind:value={amount}>
-          amount
-        </TextField>
+        <TextField bind:value={amount}>amount</TextField>
       </div>
       <div style="width: 700px;">
-        <TextField bind:value={description}>
-          description
-        </TextField>
+        <TextField bind:value={description}>description</TextField>
       </div>
       <Menu>
         <div slot="activator" class="mt-4">
-          <Button>categorys</Button>
+          <Button>
+            {categoryo ? categoryo : "category"}
+          </Button>
         </div>
         <List>
           {#if categorys}
-            {#each categorys as category }
-              <ListItem on:click={() => categoryo = category.name}>
+            {#each categorys as category}
+              <ListItem on:click={() => (categoryo = category.name)}>
                 {category.name}
               </ListItem>
             {/each}

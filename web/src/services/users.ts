@@ -51,7 +51,7 @@ export const register = async ({username, email, password}): Promise<User> => {
  
   if (!res.ok) {
     const err = await res.json();
-    throw new Error(err.message)
+    throw new CustomError(err.field, err.message)
   }
 
   return await res.json();
@@ -99,10 +99,21 @@ export const changePassword = async (
 
   if (!res.ok) {
     const err = await res.json();
-    throw new Error(err.message)
+    throw new CustomError(err.field, err.message);
   }
 
   return await res.json();
+}
+
+
+export const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+export class CustomError extends Error {
+  constructor(public field: string, public message: string) {
+    super(message);
+    this.field = field;
+
+  }
 }
 
 export interface User {
