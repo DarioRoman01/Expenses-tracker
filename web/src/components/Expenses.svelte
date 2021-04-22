@@ -7,7 +7,9 @@
   import { ProgressCircular, MaterialApp, Overlay } from "svelte-materialify";
 
   let active = false;
+  let showedExpense: Expense;
   let expenses: ExpensesResponse;
+
   onMount(async () => {
     expenses = await api<ExpensesResponse>(
       "http://localhost:1323/expenses?limit=10"
@@ -38,11 +40,11 @@
         <ExpenseCard
           {expense}
           on:remove={(_e) => deleteExpene(expense)}
-          on:update={(_e) => (active = true)}
+          on:update={(_e) => (active = true, showedExpense =  expense)}
         />
         <Overlay {active}>
           <Modal
-            {expense}
+            expense={showedExpense}
             on:updates={(_e) => handleUpdate()}
             on:close={(_e) => (active = false)}
           />

@@ -66,7 +66,7 @@ func (e *ExpensesViews) ExpensesByCategoryView(c echo.Context) error {
 
 func (e *ExpensesViews) DeleteExpenseView(c echo.Context) error {
 	userId := c.Request().Context().Value("user").(int)
-	err := expensesTable.DeleteExpense(c.Param("id"), userId, e.DB)
+	err := expensesTable.DeleteExpense(c.ParamValues()[0], userId, e.DB)
 	if err != nil {
 		return c.JSON(err.Code, err.Message)
 	}
