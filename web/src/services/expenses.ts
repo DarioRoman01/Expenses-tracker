@@ -1,3 +1,4 @@
+// expense data that is return from the request
 export interface Expense {
   id: number;
   createdAt: string;
@@ -8,16 +9,19 @@ export interface Expense {
   user_id: number;
 }
 
+// expense response paginated
 export interface ExpensesResponse {
   expenses: Expense[];
   hasMore: boolean;
 }
 
+// category data that is return from the server
 export interface Category {
   id: number;
   name: string;
 }
 
+// handle send create expense request
 export const addExpense = async (
   description: string,
   amount: number,
@@ -45,6 +49,7 @@ export const addExpense = async (
   return await res.json();
 };
 
+// send delete expense request
 export const deleteExpense = async (id: number) => {
   const res = await fetch(`http://localhost:1323/expenses/${id}`, {
     method: "DELETE",
@@ -63,6 +68,7 @@ export const deleteExpense = async (id: number) => {
   return await res.json();
 };
 
+// handle expense updates requests
 export const updateExpense = async (
   id: number,
   description: string,
@@ -91,6 +97,7 @@ export const updateExpense = async (
   return await res.json();
 };
 
+// send get expenses by category request
 export const getByCategory = async (
   category: string
 ): Promise<ExpensesResponse> => {
@@ -110,6 +117,7 @@ export const getByCategory = async (
   return await res.json();
 };
 
+// send list expenses request with cursor
 export const getByDate = async (date: string): Promise<ExpensesResponse> => {
   const res = await fetch(
     `http://localhost:1323/expenses?limit=10&cursor=${date}`,

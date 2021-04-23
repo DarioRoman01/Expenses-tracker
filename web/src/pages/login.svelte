@@ -7,6 +7,7 @@
   let usernameOrEmail: string;
   let password: string;
   let error: Error;
+  let show: boolean;
 
   const usernameRules = [(v: any) => !!v || 'Required'];
   const passwordRules = [
@@ -16,7 +17,10 @@
 
   const handleLogin = () => {
     const user = login({usernameOrEmail, password});
-    user.then(() => $redirect("./home")).catch((err: Error) => error = err);
+    user.then(() => $redirect("./home")).catch((err: Error) => {
+      error = err
+      show = true;
+    });
   }
 </script>
 
@@ -44,7 +48,7 @@
         </a>
       </div>
       {#if error}
-        <Alert class="error-color">
+        <Alert class="error-color mt-4" dismissible={true} bind:visible={show}>
           {error.message}
         </Alert>
       {/if}

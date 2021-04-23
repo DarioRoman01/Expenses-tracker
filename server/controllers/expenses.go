@@ -9,6 +9,7 @@ import (
 
 type ExpensesTable struct{}
 
+// CreateExpense handle expenses creation in the db
 func (e *ExpensesTable) CreateExpense(expense *models.Expenses, db *gorm.DB) (*models.Expenses, *echo.HTTPError) {
 	if err := db.Create(&expense).Error; err != nil {
 		return nil, echo.NewHTTPError(500, "unable to create expense")
@@ -17,6 +18,8 @@ func (e *ExpensesTable) CreateExpense(expense *models.Expenses, db *gorm.DB) (*m
 	return expense, nil
 }
 
+// DeleteExpense delete expense from the db and validate
+// that the requesting user is owner of the expense
 func (e *ExpensesTable) DeleteExpense(id string, userId int, db *gorm.DB) *echo.HTTPError {
 	var expense models.Expenses
 	db.First(&expense, id)
@@ -33,6 +36,8 @@ func (e *ExpensesTable) DeleteExpense(id string, userId int, db *gorm.DB) *echo.
 	return nil
 }
 
+// GetExpense retrieve expense by id and validate
+// that the requesting user is owner of the expense
 func (e *ExpensesTable) GetExpense(id string, userId int, db *gorm.DB) (*models.Expenses, *echo.HTTPError) {
 	var expense models.Expenses
 
@@ -43,12 +48,13 @@ func (e *ExpensesTable) GetExpense(id string, userId int, db *gorm.DB) (*models.
 	}
 
 	if expense.UserID != userId {
-		return nil, echo.NewHTTPError(404, "you do not have permissions to perfom this action")
+		return nil, echo.NewHTTPError(403, "you do not have permissions to perfom this action")
 	}
 
 	return &expense, nil
 }
 
+// retrieve users expenses using limit and cursor
 func (e *ExpensesTable) GetUserExpenses(userId int, limit int, cursor *string, db *gorm.DB) ([]models.Expenses, *echo.HTTPError, bool) {
 	var expenses []models.Expenses
 	if limit > 50 {
@@ -86,6 +92,7 @@ func (e *ExpensesTable) GetUserExpenses(userId int, limit int, cursor *string, d
 	return expenses[0 : len(expenses)-1], nil, false
 }
 
+// retrieve expenses by category
 func (e *ExpensesTable) GetExpenseByCategory(userId int, category string, db *gorm.DB) ([]models.Expenses, *echo.HTTPError) {
 	var expenses []models.Expenses
 
@@ -103,6 +110,7 @@ func (e *ExpensesTable) GetExpenseByCategory(userId int, category string, db *go
 	return expenses, nil
 }
 
+// list all categorys
 func (e *ExpensesTable) GetCategorys(db *gorm.DB) ([]*models.Category, *echo.HTTPError) {
 	var categorys []*models.Category
 
@@ -115,6 +123,7 @@ func (e *ExpensesTable) GetCategorys(db *gorm.DB) ([]*models.Category, *echo.HTT
 	return categorys, nil
 }
 
+// get avarage amount of expenses of the user
 func (e *ExpensesTable) GetAvarageAmount(userId int, db *gorm.DB) (float64, *echo.HTTPError) {
 	var avarage float64
 
@@ -130,6 +139,8 @@ func (e *ExpensesTable) GetAvarageAmount(userId int, db *gorm.DB) (float64, *ech
 	return avarage, nil
 }
 
+// handle expoenses updates and validate
+// that the requesting user in owner of the expense
 func (e *ExpensesTable) ModifyExpense(userId int, id string, data models.Expenses, db *gorm.DB) (*models.Expenses, *echo.HTTPError) {
 	var storeExpense models.Expenses
 

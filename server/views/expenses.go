@@ -15,6 +15,7 @@ type ExpensesViews struct {
 
 var expensesTable *controllers.ExpensesTable
 
+// handle expenses creation request
 func (e *ExpensesViews) AddExpenseView(c echo.Context) error {
 	userId := c.Request().Context().Value("user").(int)
 
@@ -32,6 +33,7 @@ func (e *ExpensesViews) AddExpenseView(c echo.Context) error {
 	return c.JSON(201, expenseCreated)
 }
 
+// retrieve all user expenses
 func (e *ExpensesViews) ExpensesView(c echo.Context) error {
 	userId := c.Request().Context().Value("user").(int)
 	limit := c.QueryParam("limit")
@@ -52,6 +54,7 @@ func (e *ExpensesViews) ExpensesView(c echo.Context) error {
 	})
 }
 
+// handle expenses by category request
 func (e *ExpensesViews) ExpensesByCategoryView(c echo.Context) error {
 	userId := c.Request().Context().Value("user").(int)
 
@@ -64,6 +67,7 @@ func (e *ExpensesViews) ExpensesByCategoryView(c echo.Context) error {
 	return c.JSON(200, expenses)
 }
 
+// handle delete expense request
 func (e *ExpensesViews) DeleteExpenseView(c echo.Context) error {
 	userId := c.Request().Context().Value("user").(int)
 	err := expensesTable.DeleteExpense(c.ParamValues()[0], userId, e.DB)
@@ -74,6 +78,7 @@ func (e *ExpensesViews) DeleteExpenseView(c echo.Context) error {
 	return c.JSON(200, "succesfully deleted")
 }
 
+// handle list categorys views
 func (e *ExpensesViews) GetCategorysView(c echo.Context) error {
 	categorys, err := expensesTable.GetCategorys(e.DB)
 	if err != nil {
@@ -83,6 +88,7 @@ func (e *ExpensesViews) GetCategorysView(c echo.Context) error {
 	return c.JSON(200, categorys)
 }
 
+// handle retrieve the avarage amount of expenses of the user
 func (e *ExpensesViews) AvarageAmountView(c echo.Context) error {
 	userId := c.Request().Context().Value("user").(int)
 
@@ -94,6 +100,7 @@ func (e *ExpensesViews) AvarageAmountView(c echo.Context) error {
 	return c.JSON(200, avarage)
 }
 
+// handle update expense request
 func (e *ExpensesViews) UpdateExpenseView(c echo.Context) error {
 	id := c.ParamValues()[0]
 	userId := c.Request().Context().Value("user").(int)
@@ -111,6 +118,7 @@ func (e *ExpensesViews) UpdateExpenseView(c echo.Context) error {
 	return c.JSON(200, expense)
 }
 
+// handle retrieve one expense view.
 func (e *ExpensesViews) ExpenseView(c echo.Context) error {
 	userId := c.Request().Context().Value("user").(int)
 	id := c.ParamValues()[0]

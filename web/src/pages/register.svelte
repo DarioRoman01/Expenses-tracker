@@ -47,7 +47,7 @@
       <div style="width: 700px;" class="mb-4 mt-3">
         <TextField 
           error={error && error.field === "username" ? true : false}
-          bind:value={username} 
+          bind:value={username}
           rules={usernameRules}>
           username
         </TextField>

@@ -1,3 +1,4 @@
+// api call with generics for GET request
 export default async function api<T>(url: string): Promise<T> {
   const response = await fetch(url, {
     credentials: 'include',
@@ -12,6 +13,7 @@ export default async function api<T>(url: string): Promise<T> {
   return await response.json();
 }
 
+// handle login request
 export const login =  async ({usernameOrEmail, password}): Promise<User> => {
   const res = await fetch("http://localhost:1323/login", {
     method: "post",
@@ -34,6 +36,7 @@ export const login =  async ({usernameOrEmail, password}): Promise<User> => {
   return await res.json();
 }
 
+// send register request to server
 export const register = async ({username, email, password}): Promise<User> => {
   const res = await fetch("http://localhost:1323/signup", {
     method: "POST",
@@ -117,6 +120,7 @@ export class CustomError extends Error {
   }
 }
 
+// user data that is retrieved from the server.
 export interface User {
   id: number;
   createdAt: string;

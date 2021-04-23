@@ -2,6 +2,7 @@ package models
 
 import "time"
 
+// Expense model
 type Expenses struct {
 	ID           int        `json:"id"`
 	CreatedAt    *time.Time `json:"createdAt"`
@@ -12,11 +13,13 @@ type Expenses struct {
 	UserID       int        `json:"user_id"`
 }
 
+// expense response for pagination
 type PaginatedExpenses struct {
 	Expenses []Expenses `json:"expenses"`
 	HasMore  bool       `json:"hasMore"`
 }
 
+// category model
 type Category struct {
 	ID       int        `json:"id" gorm:"primaryKey"`
 	Name     string     `json:"name" gorm:"unique"`

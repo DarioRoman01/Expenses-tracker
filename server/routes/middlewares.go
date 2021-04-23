@@ -13,6 +13,8 @@ import (
 
 var SkipperRoutes = [4]string{"/login", "/signup", "/forgot-password", "/change-password"}
 
+// is auth middleware ensure that the
+// requesting user is logged in
 func IsAuth(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		if contains(SkipperRoutes, c.Path()) {
@@ -30,6 +32,7 @@ func IsAuth(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
+// cors configuration
 func CORSConfig() echo.MiddlewareFunc {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("unable to read env")
@@ -42,6 +45,7 @@ func CORSConfig() echo.MiddlewareFunc {
 	return cors
 }
 
+// utiliti function
 func contains(arr [4]string, str string) bool {
 	for _, a := range arr {
 		if a == str {

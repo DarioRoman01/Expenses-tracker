@@ -38,6 +38,7 @@ func InvalidInput(field, message string) *echo.HTTPError {
 	})
 }
 
+// validate if user is logged in
 func IsLoggedIn(c echo.Context) (int, *echo.HTTPError) {
 	session := cache.Default(c)
 	userId := session.Get("userId")
