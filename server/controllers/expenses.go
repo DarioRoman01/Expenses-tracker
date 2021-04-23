@@ -81,10 +81,6 @@ func (e *ExpensesTable) GetUserExpenses(userId int, limit int, cursor *string, d
 		`, userId, limit).Find(&expenses)
 	}
 
-	if len(expenses) == 0 {
-		return nil, echo.NewHTTPError(400, "invalid limit"), false
-	}
-
 	if len(expenses) == limit {
 		return expenses[0 : limit-1], nil, true
 	}
