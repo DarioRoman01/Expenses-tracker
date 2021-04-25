@@ -39,10 +39,15 @@ first check the .env.example in the server directory and set the env variables
 
 ```
 DATABASE_URL=postgresql://<username>:<password>@localhost:5432/<db name>
+
 REDIS_ADDRS=localhost:<redis port>
+
 REDIS_PWD=<your redis password> // if you dont set a password just leaved blank
+
 CORS_ORIGIN=http://localhost:5000
+
 SESSION_SECRET=wiejfowfjsd
+
 PORT=1323
 ```
 
