@@ -67,9 +67,9 @@ func (e *ExpensesTable) GetUserExpenses(userId int, limit int, cursor *string, d
 			SELECT e.*
 			FROM expenses e
 			WHERE user_id = ?
-			WHERE created_at < ?
-			ORBER BY created_at DESC
-			LIMIT ?
+			AND created_at < ?
+			ORDER BY created_at DESC
+			LIMIT ?;
 		`, userId, cursor, limit).Find(&expenses)
 	} else {
 		db.Raw(`
@@ -81,11 +81,15 @@ func (e *ExpensesTable) GetUserExpenses(userId int, limit int, cursor *string, d
 		`, userId, limit).Find(&expenses)
 	}
 
+	if len(expenses) == 0 {
+		return expenses, nil, false
+	}
+
 	if len(expenses) == limit {
 		return expenses[0 : limit-1], nil, true
 	}
 
-	return expenses[0 : len(expenses)-1], nil, false
+	return expenses, nil, false
 }
 
 // retrieve expenses by category
@@ -123,13 +127,13 @@ func (e *ExpensesTable) GetCategorys(db *gorm.DB) ([]*models.Category, *echo.HTT
 func (e *ExpensesTable) GetAvarageAmount(userId int, db *gorm.DB) (float64, *echo.HTTPError) {
 	var avarage float64
 
-	db.Raw(`
+	err := db.Raw(`
 	SELECT AVG(amount) FROM expenses
 	WHERE user_id = ?
-	`, userId).Find(&avarage)
+	`, userId).Find(&avarage).Error
 
-	if avarage == 0 {
-		return 0, echo.NewHTTPError(500, "something wrong happend")
+	if err != nil {
+		return 0, nil
 	}
 
 	return avarage, nil
