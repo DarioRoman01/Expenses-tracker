@@ -4,7 +4,14 @@
   import type { ExpensesResponse, Expense } from "../services/expenses";
   import Modal from "./Modal.svelte";
   import ExpenseCard from "./ExpenseCard.svelte";
-  import { ProgressCircular, MaterialApp, Overlay } from "svelte-materialify";
+  import {
+    ProgressCircular,
+    MaterialApp,
+    Overlay,
+    Icon,
+    Button,
+  } from "svelte-materialify";
+  import { mdiPlusBox } from "@mdi/js";
 
   let active = false;
   let showedExpense: Expense;
@@ -31,6 +38,17 @@
     );
     res.then((newExpenses) => (expenses = newExpenses));
   };
+
+  const loadMore = (lastExpense: Expense) => {
+    const moreExpenses = api<ExpensesResponse>(
+      `http://localhost:1323/expenses?limit=10&cursor=${lastExpense.createdAt}`
+    );
+
+    moreExpenses.then((e) => {
+      expenses.hasMore = e.hasMore;
+      e.expenses.forEach(ex => expenses.expenses.push(ex));
+    });
+  };
 </script>
 
 <MaterialApp>
@@ -40,7 +58,7 @@
         <ExpenseCard
           {expense}
           on:remove={(_e) => deleteExpene(expense)}
-          on:update={(_e) => (active = true, showedExpense =  expense)}
+          on:update={(_e) => ((active = true), (showedExpense = expense))}
         />
         <Overlay {active}>
           <Modal
@@ -51,6 +69,17 @@
         </Overlay>
       </div>
     {/each}
+    {#if expenses.hasMore == true}
+      <div class="d-flex justify-center mt-4 mb-3">
+        <Button
+          class="primary-color"
+          on:click={() =>
+            loadMore(expenses.expenses[expenses.expenses.length - 1])}
+        >
+          <Icon path={mdiPlusBox} />
+        </Button>
+      </div>
+    {/if}
   {:else}
     <ProgressCircular size={50} indeterminate color="primary" />
   {/if}
