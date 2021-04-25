@@ -1,6 +1,7 @@
 # Expense Tracker
 
 app for track your finances and have a healthy finance.
+![](./docs/expenses.png)
 
 ## What is this?
 this can be call a personal project for put in practice all that i learn in the past weeks
